@@ -1,0 +1,59 @@
+import java.util.*;
+
+public class TSP {
+    static final int INF = 1_000_000_000;
+
+    // Решение задачи коммивояжера
+    public static int tsp(int[][] dist) {
+        int n = dist.length;
+        int N = 1 << n; // количество подмножеств вершин
+        int[][] dp = new int[N][n];
+
+        for (int[] row : dp)
+            Arrays.fill(row, INF);
+
+        dp[1][0] = 0; // начинаем из города 0
+
+        for (int mask = 1; mask < N; mask++) {
+            for (int u = 0; u < n; u++) {
+                if ((mask & (1 << u)) == 0) continue; // u не в подмножестве
+
+                for (int v = 0; v < n; v++) {
+                    if ((mask & (1 << v)) != 0) continue; // v уже посещён
+                    if (dist[u][v] == INF) continue;
+
+                    int nextMask = mask | (1 << v);
+                    dp[nextMask][v] = Math.min(dp[nextMask][v], dp[mask][u] + dist[u][v]);
+                }
+            }
+        }
+
+        // Возврат в начальный город
+        int ans = INF;
+        for (int i = 1; i < n; i++) {
+            if (dist[i][0] == INF) continue;
+            ans = Math.min(ans, dp[N - 1][i] + dist[i][0]);
+        }
+
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Введите количество городов: ");
+        int n = sc.nextInt();
+
+        int[][] dist = new int[n][n];
+        System.out.println("Введите матрицу расстояний (" + n + "x" + n + "):");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = sc.nextInt();
+            }
+        }
+
+        int result = tsp(dist);
+
+        System.out.println("\nМинимальная длина пути: " + result);
+    }
+}
