@@ -1,0 +1,72 @@
+// GraphBfsDfs.java
+import java.util.*;
+
+class Graph {
+    private final int n;
+    private final List<List<Integer>> adj;
+
+    public Graph(int n) {
+        this.n = n;
+        adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    }
+
+    public void addEdge(int u, int v, boolean directed) {
+        adj.get(u).add(v);
+        if (!directed) adj.get(v).add(u);
+    }
+
+    public int[] bfs(int start) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+        Queue<Integer> q = new ArrayDeque<>();
+        dist[start] = 0;
+        q.add(start);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v : adj.get(u)) {
+                if (dist[v] == -1) {
+                    dist[v] = dist[u] + 1;
+                    q.add(v);
+                }
+            }
+        }
+        return dist;
+    }
+
+    public List<Integer> dfs(int start) {
+        boolean[] visited = new boolean[n];
+        List<Integer> order = new ArrayList<>();
+        dfsUtil(start, visited, order);
+        return order;
+    }
+
+    private void dfsUtil(int u, boolean[] visited, List<Integer> order) {
+        visited[u] = true;
+        order.add(u);
+        for (int v : adj.get(u)) {
+            if (!visited[v]) dfsUtil(v, visited, order);
+        }
+    }
+}
+
+public class GraphBfsDfs {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt(), m = sc.nextInt();
+        Graph g = new Graph(n);
+        for (int i = 0; i < m; i++) {
+            int u = sc.nextInt(), v = sc.nextInt();
+            g.addEdge(u, v, false);
+        }
+
+        int start = 0;
+        int[] dist = g.bfs(start);
+        System.out.println("BFS distances from " + start + ":");
+        for (int i = 0; i < n; i++) System.out.println(i + ": " + dist[i]);
+
+        System.out.println("DFS order from " + start + ":");
+        for (int v : g.dfs(start)) System.out.print(v + " ");
+        System.out.println();
+    }
+}
