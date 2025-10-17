@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+// Класс графа
+class Graph {
+private:
+    int V; // количество вершин
+    vector<vector<int>> adj; // список смежности
+
+public:
+    // Конструктор
+    Graph(int vertices) {
+        V = vertices;
+        adj.resize(V);
+    }
+
+    // Добавить ребро (по умолчанию — неориентированный граф)
+    void addEdge(int u, int v, bool directed = false) {
+        adj[u].push_back(v);
+        if (!directed) {
+            adj[v].push_back(u);
+        }
+    }
+
+    // Обход в ширину (BFS)
+    void BFS(int start) {
+        vector<bool> visited(V, false);
+        queue<int> q;
+
+        visited[start] = true;
+        q.push(start);
+
+        cout << "BFS от вершины " << start << ": ";
+
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            cout << u << " ";
+
+            for (int v : adj[u]) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    q.push(v);
+                }
+            }
+        }
+        cout << endl;
+    }
+
+    // Обход в глубину (DFS)
+    void DFSUtil(int u, vector<bool> &visited) {
+        visited[u] = true;
+        cout << u << " ";
+
+        for (int v : adj[u]) {
+            if (!visited[v])
+                DFSUtil(v, visited);
+        }
+    }
+
+    void DFS(int start) {
+        vector<bool> visited(V, false);
+        cout << "DFS от вершины " << start << ": ";
+        DFSUtil(start, visited);
+        cout << endl;
+    }
+
+    // Печать графа (список смежности)
+    void printGraph() {
+        cout << "Список смежности графа:\n";
+        for (int i = 0; i < V; i++) {
+            cout << i << ": ";
+            for (int v : adj[i])
+                cout << v << " ";
+            cout << endl;
+        }
+    }
+};
