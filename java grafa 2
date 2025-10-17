@@ -1,0 +1,82 @@
+import java.util.*;
+
+public class Graph {
+    private int V; // количество вершин
+    private List<List<Integer>> adj; // список смежности
+
+    // Конструктор
+    public Graph(int vertices) {
+        V = vertices;
+        adj = new ArrayList<>(V);
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+    }
+
+    // Добавить ребро (по умолчанию — неориентированный граф)
+    public void addEdge(int u, int v, boolean directed) {
+        adj.get(u).add(v);
+        if (!directed) {
+            adj.get(v).add(u);
+        }
+    }
+
+    // Перегруженная версия для неориентированного графа
+    public void addEdge(int u, int v) {
+        addEdge(u, v, false);
+    }
+
+    // Обход в ширину (BFS)
+    public void BFS(int start) {
+        boolean[] visited = new boolean[V];
+        Queue<Integer> queue = new LinkedList<>();
+
+        visited[start] = true;
+        queue.add(start);
+
+        System.out.print("BFS от вершины " + start + ": ");
+
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            System.out.print(u + " ");
+
+            for (int v : adj.get(u)) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    queue.add(v);
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    // Обход в глубину (DFS)
+    private void DFSUtil(int u, boolean[] visited) {
+        visited[u] = true;
+        System.out.print(u + " ");
+
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                DFSUtil(v, visited);
+            }
+        }
+    }
+
+    public void DFS(int start) {
+        boolean[] visited = new boolean[V];
+        System.out.print("DFS от вершины " + start + ": ");
+        DFSUtil(start, visited);
+        System.out.println();
+    }
+
+    // Печать графа (список смежности)
+    public void printGraph() {
+        System.out.println("Список смежности графа:");
+        for (int i = 0; i < V; i++) {
+            System.out.print(i + ": ");
+            for (int v : adj.get(i)) {
+                System.out.print(v + " ");
+            }
+            System.out.println();
+        }
+    }
