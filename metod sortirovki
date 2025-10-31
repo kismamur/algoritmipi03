@@ -1,0 +1,12 @@
+def bubble_sort(arr):
+    n = len(arr)
+    # Проходим по всему списку несколько раз
+    for i in range(n):
+        # Сравниваем соседние элементы
+        for j in range(0, n - i - 1):
+            # Если текущий элемент больше следующего - меняем местами
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+sorted_list = bubble_sort([9, 0, -15])
+print(sorted_list)
